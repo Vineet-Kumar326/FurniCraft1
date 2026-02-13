@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FurniCraft - Category</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2C3E50;
+            --secondary-color: #E67E22;
+            --accent-color: #ECF0F1;
+            --text-color: #2C3E50;
+            --background-color: #F8F9FA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        /* Header Styles */
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .cart-icon {
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        /* Category Header */
+        .category-header {
+            margin-top: 80px;
+            padding: 3rem 2rem;
+            background: white;
+            text-align: center;
+        }
+
+        .category-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .category-header p {
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Products Grid */
+        .products-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-group select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-info h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            color: var(--secondary-color);
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background: #d35400;
+        }
+
+        /* Cart Modal Styles */
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            padding: 2rem;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .cart-modal.active {
+            transform: translateX(0);
+        }
+
+        .cart-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .cart-overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .filters {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .filter-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dropdown-button:hover {
+            color: var(--secondary-color);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 1rem 0;
+            z-index: 1000;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--accent-color);
+            color: var(--secondary-color);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">FurniCraft</a>
+            <div class="nav-links">
+                <a href="index.html#categories">Categories</a>
+                <a href="index.html#products">Products</a>
+                <a href="index.html#about">About</a>
+                <a href="index.html#contact">Contact</a>
+                <div class="dropdown">
+                    <button class="dropdown-button">
+                        Shop by Category <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="category.html?type=living-room">Living Room</a>
+                        <a href="category.html?type=bedroom">Bedroom</a>
+                        <a href="category.html?type=dining-room">Dining Room</a>
+                        <a href="category.html?type=office">Office</a>
+                        <a href="category.html?type=outdoor">Outdoor</a>
+                        <a href="category.html?type=kids-room">Kids Room</a>
+                    </div>
+                </div>
+                <a href="#" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Category Header -->
+    <div class="category-header">
+        <h1 id="categoryTitle">Category Name</h1>
+        <p id="categoryDescription">Browse our collection of premium furniture for your home.</p>
+    </div>
+
+    <!-- Products Container -->
+    <div class="products-container">
+        <div class="filters">
+            <div class="filter-group">
+                <label for="sort">Sort by:</label>
+                <select id="sort" onchange="sortProducts()">
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="name">Name: A to Z</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter">Filter by:</label>
+                <select id="filter" onchange="filterProducts()">
+                    <option value="all">All Products</option>
+                    <option value="new">New Arrivals</option>
+                    <option value="sale">On Sale</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="product-grid" id="productGrid">
+            <!-- Products will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <button class="close-cart" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be dynamically added here -->
+        </div>
+        <div class="cart-summary">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">$0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        // Get category from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('type');
+
+        // Category data
+        const categories = {
+            'living-room': {
+                title: 'Living Room',
+                description: 'Discover our premium collection of living room furniture that combines style, comfort, and functionality.',
+                products: [
+                    {
+                        name: 'Modern Sofa',
+                        price: 899,
+                        image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3',
+                        description: 'Comfortable modern sofa with premium fabric'
+                    },
+                    {
+                        name: 'Coffee Table',
+                        price: 249,
+                        image: 'https://images.unsplash.com/photo-1577140917170-285929fb55b7?ixlib=rb-4.0.3',
+                        description: 'Elegant coffee table with storage'
+                    },
+                    {
+                        name: 'TV Stand',
+                        price: 399,
+                        image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3',
+                        description: 'Modern TV stand with cable management'
+                    }
+                ]
+            },
+            'bedroom': {
+                title: 'Bedroom',
+                description: 'Transform your bedroom into a peaceful sanctuary with our carefully curated collection.',
+                products: [
+                    {
+                        name: 'Queen Bed Frame',
+                        price: 699,
+                        image: 'https://images.unsplash.com/photo-1567016432779-094069958ea5?ixlib=rb-4.0.3',
+                        description: 'Modern queen bed frame with headboard'
+                    },
+                    {
+                        name: 'Nightstand',
+                        price: 199,
+                        image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3',
+                        description: 'Elegant nightstand with drawer'
+                    }
+                ]
+            },
+            'dining-room': {
+                title: 'Dining Room',
+                description: 'Create memorable dining experiences with our stylish and functional dining room furniture.',
+                products: [
+                    {
+                        name: 'Dining Table',
+                        price: 599,
+                        image: 'https://images.unsplash.com/photo-1567016432779-094069958ea5?ixlib=rb-4.0.3',
+                        description: 'Solid wood dining table'
+                    },
+                    {
+                        name: 'Dining Chairs',
+                        price: 299,
+                        image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3',
+                        description: 'Set of 4 modern dining chairs'
+                    }
+                ]
+            },
+            'office': {
+                title: 'Office',
+                description: 'Boost your productivity with our ergonomic and stylish office furniture collection.',
+                products: [
+                    {
+                        name: 'Office Desk',
+                        price: 449,
+                        image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?ixlib=rb-4.0.3',
+                        description: 'Spacious office desk with cable management'
+                    },
+                    {
+                        name: 'Office Chair',
+                        price: 299,
+                        image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3',
+                        description: 'Ergonomic office chair with lumbar support'
+                    }
+                ]
+            },
+            'outdoor': {
+                title: 'Outdoor',
+                description: 'Enhance your outdoor living space with our durable and stylish outdoor furniture.',
+                products: [
+                    {
+                        name: 'Outdoor Sofa',
+                        price: 799,
+                        image: 'https://images.unsplash.com/photo-1600210492493-0946911123ea?ixlib=rb-4.0.3',
+                        description: 'Weather-resistant outdoor sofa set'
+                    },
+                    {
+                        name: 'Patio Table',
+                        price: 349,
+                        image: 'https://images.unsplash.com/photo-1560185007-5f0bb1866cab?ixlib=rb-4.0.3',
+                        description: 'Durable patio dining table'
+                    }
+                ]
+            },
+            'kids-room': {
+                title: 'Kids Room',
+                description: 'Create a fun and functional space for your children with our kid-friendly furniture.',
+                products: [
+                    {
+                        name: 'Kids Bed',
+                        price: 399,
+                        image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3',
+                        description: 'Safe and comfortable kids bed'
+                    },
+                    {
+                        name: 'Study Desk',
+                        price: 249,
+                        image: 'https://images.unsplash.com/photo-1560185007-5f0bb1866cab?ixlib=rb-4.0.3',
+                        description: 'Adjustable height study desk'
+                    }
+                ]
+            }
+        };
+
+        // Update page content based on category
+        function updatePageContent() {
+            const categoryData = categories[category];
+            if (!categoryData) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.title = `FurniCraft - ${categoryData.title}`;
+            document.getElementById('categoryTitle').textContent = categoryData.title;
+            document.getElementById('categoryDescription').textContent = categoryData.description;
+
+            displayProducts(categoryData.products);
+        }
+
+        // Display products
+        function displayProducts(products) {
+            const productGrid = document.getElementById('productGrid');
+            productGrid.innerHTML = '';
+
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}">
+                    </div>
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <p class="product-price">$${product.price}</p>
+                        <button class="add-to-cart" onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})">
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+                productGrid.appendChild(productCard);
+            });
+        }
+
+        // Sort products
+        function sortProducts() {
+            const sortValue = document.getElementById('sort').value;
+            const categoryData = categories[category];
+            let sortedProducts = [...categoryData.products];
+
+            switch (sortValue) {
+                case 'price-low':
+                    sortedProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    sortedProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'name':
+                    sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+            }
+
+            displayProducts(sortedProducts);
+        }
+
+        // Filter products
+        function filterProducts() {
+            const filterValue = document.getElementById('filter').value;
+            const categoryData = categories[category];
+            let filteredProducts = [...categoryData.products];
+
+            switch (filterValue) {
+                case 'new':
+                    // Add logic for new products
+                    break;
+                case 'sale':
+                    // Add logic for sale products
+                    break;
+            }
+
+            displayProducts(filteredProducts);
+        }
+
+        // Cart functionality
+        let cart = [];
+        const cartModal = document.getElementById('cartModal');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const cartItemsContainer = document.getElementById('cartItems');
+        const cartTotalElement = document.getElementById('cartTotal');
+        const cartCount = document.querySelector('.cart-count');
+
+        // Toggle cart visibility
+        function toggleCart() {
+            cartModal.style.display = cartModal.style.display === 'block' ? 'none' : 'block';
+            cartOverlay.classList.toggle('active');
+            if (cartModal.style.display === 'block') {
+                setTimeout(() => cartModal.classList.add('active'), 10);
+            } else {
+                cartModal.classList.remove('active');
+            }
+        }
+
+        // Add to cart
+        function addToCart(product) {
+            const existingProduct = cart.find(item => item.name === product.name);
+            if (existingProduct) {
+                existingProduct.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCart();
+            toggleCart();
+            
+            // Update cart count
+            const cartItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = cartItems;
+        }
+
+        // Update cart display
+        function updateCart() {
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                const cartItemElement = document.createElement('div');
+                cartItemElement.className = 'cart-item';
+                cartItemElement.innerHTML = `
+                    <div class="cart-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="cart-item-details">
+                        <h3 class="cart-item-title">${item.name}</h3>
+                        <p class="cart-item-price">$${item.price.toFixed(2)}</p>
+                        <div class="cart-item-quantity">
+                            <button class="quantity-btn" onclick="updateQuantity('${item.name}', -1)">-</button>
+                            <span>${item.quantity}</span>
+                            <button class="quantity-btn" onclick="updateQuantity('${item.name}', 1)">+</button>
+                        </div>
+                        <button class="remove-item" onclick="removeItem('${item.name}')">Remove</button>
+                    </div>
+                `;
+                cartItemsContainer.appendChild(cartItemElement);
+            });
+
+            cartTotalElement.textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Update item quantity
+        function updateQuantity(name, change) {
+            const item = cart.find(item => item.name === name);
+            if (item) {
+                item.quantity = Math.max(1, item.quantity + change);
+                updateCart();
+                const cartItems = cart.reduce((total, item) => total + item.quantity, 0);
+                cartCount.textContent = cartItems;
+            }
+        }
+
+        // Remove item from cart
+        function removeItem(name) {
+            cart = cart.filter(item => item.name !== name);
+            updateCart();
+            const cartItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = cartItems;
+        }
+
+        // Proceed to checkout
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            window.location.href = 'checkout.html';
+        }
+
+        // Make cart icon clickable
+        document.querySelector('.cart-icon').addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleCart();
+        });
+
+        // Initialize page
+        updatePageContent();
+    </script>
+</body>
+</html> 
